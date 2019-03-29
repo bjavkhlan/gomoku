@@ -1,65 +1,59 @@
-var socket = io();
-socket.on('message', function(data) {
-  console.log(data);
-});
+(()=>{
+  let socket = io();
+  let color;
+  let dotSrc = ["", "static/dotw.png", "static/dotb.png"];
+  socket.emit('new player');
+  socket.on("color", data => {
+    color = data;
+    console.log(color);
+  });
+  socket.on("game over", board => {
+    alert("Game over");
+  });
+  socket.on("state", board => {
+    const BOARD_WIDTH = 15;
+    const BOARD_HEIGHT = 15;
+    let table = document.getElementById("table");
+    table.innerHTML = "";
+    for (let i = 0; i < BOARD_HEIGHT; i++) {
+      let tr = document.createElement("TR");
+      for (let j = 0; j < BOARD_WIDTH; j++) {
+        let td = document.createElement("TD");
+        td.data = { x: i, y: j };
+        td.onclick = clickHandler;
 
+        if (board[i][j] !== 0) {
+          let dot = document.createElement("img");
+          dot.src = dotSrc[board[i][j]];
+          dot.style.width = "20px";
+          dot.style.margin = "auto";
+          td.appendChild(dot);
+        }
+        tr.appendChild(td);
+      }
+      table.appendChild(tr);
+    }
+  })
 
-var movement = {
-  up: false,
-  down: false,
-  left: false,
-  right: false
-}
-document.addEventListener('keydown', function(event) {
-  switch (event.keyCode) {
-    case 65: // A
-      movement.left = true;
-      break;
-    case 87: // W
-      movement.up = true;
-      break;
-    case 68: // D
-      movement.right = true;
-      break;
-    case 83: // S
-      movement.down = true;
-      break;
+  function clickHandler(event) {
+    socket.emit("movement", event.target.data);
   }
-});
-document.addEventListener('keyup', function(event) {
-  switch (event.keyCode) {
-    case 65: // A
-      movement.left = false;
-      break;
-    case 87: // W
-      movement.up = false;
-      break;
-    case 68: // D
-      movement.right = false;
-      break;
-    case 83: // S
-      movement.down = false;
-      break;
+
+  window.onload = ()=>{
+    const BOARD_WIDTH = 15;
+    const BOARD_HEIGHT = 15;
+    let table = document.getElementById("table");
+    table.innerHTML = "";
+    for (let i = 0; i < BOARD_HEIGHT; i++) {
+      let tr = document.createElement("TR");
+      for (let j = 0; j < BOARD_WIDTH; j++) {
+        let td = document.createElement("TD");
+        td.data = { x: i, y: j };
+        td.onclick = clickHandler;
+
+        tr.appendChild(td);
+      }
+      table.appendChild(tr);
+    }
   }
-});
-
-socket.emit('new player');
-setInterval(function() {
-  socket.emit('movement', movement);
-}, 1000 / 60);
-
-
-var canvas = document.getElementById('canvas');
-canvas.width = 800;
-canvas.height = 600;
-var context = canvas.getContext('2d');
-socket.on('state', function(players) {
-  context.clearRect(0, 0, 800, 600);
-  context.fillStyle = 'green';
-  for (var id in players) {
-    var player = players[id];
-    context.beginPath();
-    context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
-    context.fill();
-  }
-});
+})();
