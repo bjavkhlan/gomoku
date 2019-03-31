@@ -1,36 +1,29 @@
 <html>
-  <head>
-    <title>A Multiplayer Game</title>
-    <style>
-      * {
-        padding: 0;
-        margin: 0;
-      }
-      canvas {
-        width: 800px;
-        height: 600px;
-        border: 5px solid black;
-      }
-      table {
-        background-color: LightGray;
-        border: 1px solid black;
-        margin: auto;
-      }
-      td {
-        border: 1px solid black;
-        text-align: center;
-        width: 50px;
-        height: 50px;
-        padding: 0;
-        margin: 0;
-      }
-    </style>
-    <script src="/socket.io/socket.io.js"></script>
-  </head>
-  <body>
-    <!-- <canvas id="canvas"></canvas> -->
-    <table id="table">
-    </table>
-  </body>
-  <script src="/static/game.js"></script>
+
+<head>
+  <title>A Multiplayer Game</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="/static/css/master.css" />
+</head>
+
+<body>
+  <!-- <canvas id="canvas"></canvas> -->
+
+  <div id="alias_overlay">
+    <div id="alias_prompt">
+      <input type="text" id="alias_input" placeholder="Enter your alias">
+      <button type="button" id="alias_button">Go!</button>
+    </div>
+  </div>
+  <div id="container">
+    <h2>Active Players:</h2>
+    <ul id="active_players">
+
+    </ul>
+  </div>
+</body>
+
+<script src="/static/js/pregame.js"></script>
+<script src="/static/js/game.js"></script>
+
 </html>

@@ -1,8 +1,6 @@
 (()=>{
-  let socket = io();
   let color;
-  let dotSrc = ["", "static/dotw.png", "static/dotb.png"];
-  socket.emit('new player');
+  let dotSrc = ["", "static/images/dotw.png", "static/images/dotb.png"];
   socket.on("color", data => {
     color = data;
     console.log(color);
@@ -13,8 +11,10 @@
   socket.on("state", board => {
     const BOARD_WIDTH = 15;
     const BOARD_HEIGHT = 15;
-    let table = document.getElementById("table");
-    table.innerHTML = "";
+    let container = document.getElementById("container");
+    let table = document.createElement("TABLE");
+    container.innerHTML = "";
+    container.appendChild(table);
     for (let i = 0; i < BOARD_HEIGHT; i++) {
       let tr = document.createElement("TR");
       for (let j = 0; j < BOARD_WIDTH; j++) {
@@ -35,25 +35,7 @@
     }
   })
 
-  function clickHandler(event) {
-    socket.emit("movement", event.target.data);
-  }
 
-  window.onload = ()=>{
-    const BOARD_WIDTH = 15;
-    const BOARD_HEIGHT = 15;
-    let table = document.getElementById("table");
-    table.innerHTML = "";
-    for (let i = 0; i < BOARD_HEIGHT; i++) {
-      let tr = document.createElement("TR");
-      for (let j = 0; j < BOARD_WIDTH; j++) {
-        let td = document.createElement("TD");
-        td.data = { x: i, y: j };
-        td.onclick = clickHandler;
 
-        tr.appendChild(td);
-      }
-      table.appendChild(tr);
-    }
-  }
+
 })();

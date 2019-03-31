@@ -4,6 +4,7 @@ let http = require('http');
 let path = require('path');
 let socketIO = require('socket.io');
 let gomoku = require("./gomoku.js");
+let game = require("./game.js")
 
 let app = express();
 let server = http.Server(app);
@@ -22,6 +23,7 @@ server.listen(5000, function() {
 
 let numPlayers = 0;
 let players = {};
+let games = {};
 let turn = 1;
 let board = [];
 for (let i = 0; i < 15; i++) {
@@ -30,13 +32,21 @@ for (let i = 0; i < 15; i++) {
     board[i].push(0);
 }
 
+
 io.on('connection', function(socket) {
-  socket.on('new player', function() {
-    if (numPlayers === 2) return;
-    players[socket.id] = {
-      color: ++numPlayers
-    };
-    io.sockets.emit('color', numPlayers);
+  socket.on("game request", socketId => {
+    //send Request to socket with socketId from this socket;
+  })
+  socket.on('new game', socketId => {
+    //initialize new object with this socket & socketID ;
+  });
+  socket.on('new player', function(alias) {
+    players[socket.id] = alias;
+    // if (numPlayers === 2) return;
+    // players[socket.id] = {
+    //   color: ++numPlayers
+    // };
+    // io.sockets.emit('color', numPlayers);
   });
   socket.on('movement', function(data) {
     let color = players[socket.id].color;
@@ -48,3 +58,4 @@ io.on('connection', function(socket) {
     io.sockets.emit('state', board);
   });
 });
+setInterval( ()=> io.sockets.emit("active players", players), 1000);
